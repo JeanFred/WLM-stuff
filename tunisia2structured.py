@@ -54,7 +54,7 @@ def make_template(**kwargs):
 }}}}""".format(**kwargs)
 
 
-def make_article(iso, text):
+def make_article_text(iso, text):
     """Make a stub article."""
     return """\
 Cet article recense les [[Monument historique|monuments historiques]] et \
@@ -81,6 +81,12 @@ par l'[[Institut national du patrimoine (Tunisie)|Institut national du patrimoin
 """ % (iso, text)
 
 
+def convert_list(handle, iso_code):
+    """Convert a given list to article."""
+    text = "\n".join(list(parse_tunisia_list(handle, iso_code)))
+    return make_article_text(iso_code, text)
+
+
 def main():
     """Main method."""
     desc = "Converts Tunisia unstructured list to structured lists."
@@ -88,13 +94,11 @@ def main():
     parser.add_argument('--list', dest="list_file", type=file,
                         required=True,
                         help='The text file with the wikicode')
-    parser.add_argument('--iso', dest="iso_code", type=str,
+    parser.add_argument('--iso', dest="iso_code", type=int,
                         required=True,
                         help='The ISO code of the gouvernat.')
     args = parser.parse_args()
-    iso = sys.argv[1]
-    text = "\n".join(list(parse_tunisia_list(args.list_file, args.iso_code)))
-    print make_article(iso, text)
+    print convert_list(args.list_file, args.iso_code)
 
 
 if __name__ == '__main__':
